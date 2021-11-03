@@ -58,6 +58,11 @@ RUN apt-get install -y mysql-client \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php7.4
 
+# Set global node moduels to home
+RUN export PATH=$HOME/.local/bin:$PATH
+RUN export NODE_PATH=$HOME/.local/lib/node_modules:$NODE_PATH
+RUN export npm_config_prefix=$HOME/.local
+
 # Other
 RUN mkdir ~/.ssh
 RUN touch ~/.ssh_config
