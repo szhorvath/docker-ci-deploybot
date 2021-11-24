@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update
 
-RUN apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 \
+RUN apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 imagemagick \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
@@ -35,14 +35,15 @@ RUN echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu hirsute main" > /etc/ap
     php7.4-xml php7.4-zip php7.4-bcmath php7.4-soap \
     php7.4-intl php7.4-readline php7.4-pcov \
     php7.4-msgpack php7.4-igbinary php7.4-ldap \
-    php7.4-redis php7.4-xdebug
+    php7.4-redis php7.4-xdebug php7.4-imagick
 
 # Composer
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
 # Node 16
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && npm install -g npm
 
 # Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
