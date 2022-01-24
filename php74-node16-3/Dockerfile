@@ -103,7 +103,7 @@ RUN npm install -g npm
 # point Cypress at the /root/cache no matter what user account is used
 # see https://on.cypress.io/caching
 ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress
-RUN npm install -g cypress
+RUN npm install -g "cypress@9.2.0"
 
 # give every user read access to the "/root" folder where the binary is cached
 # we really only need to worry about the top folder, fortunately
