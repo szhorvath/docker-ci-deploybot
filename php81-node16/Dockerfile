@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ubuntu:21.04
+FROM --platform=linux/amd64 ubuntu:21.10
 
 LABEL maintainer="Sandor Horvath"
 
@@ -21,13 +21,12 @@ RUN apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor 
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
-    && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C \
-    && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C300EE8C
+    && apt-key adv --homedir ~/.gnupg --keyserver hkps://keyserver.ubuntu.com --recv-keys 14AA40EC0831756756D7F66C4F4EA0AAE5267A6C
 
-RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+# RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 # PHP 8.1
-RUN echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu hirsute main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+RUN echo "deb https://ppa.launchpadcontent.net/ondrej/php/ubuntu impish main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
     && apt-get install -y php8.1-cli php8.1-dev \
     php8.1-pgsql php8.1-sqlite3 php8.1-gd \
@@ -40,7 +39,7 @@ RUN echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu hirsute main" > /etc/ap
     php8.1-memcached php8.1-pcov php8.1-xdebug php8.1-imagick
 
 # Composer
-RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+RUN php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
 # Node 16
 RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
@@ -101,8 +100,12 @@ RUN export PATH=$HOME/.local/bin:$PATH
 RUN export NODE_PATH=$HOME/.local/lib/node_modules:$NODE_PATH
 RUN export npm_config_prefix=$HOME/.local
 
-# fix npm - not the latest version installed by apt-get
-RUN npm install -g npm
+RUN echo "whoami: $(whoami)" \
+    && npm config -g set user $(whoami) \
+    # command "id" should print:
+    # uid=0(root) gid=0(root) groups=0(root)
+    # which means the current user is root
+    && id
 
 # point Cypress at the /root/cache no matter what user account is used
 # see https://on.cypress.io/caching
