@@ -83,7 +83,7 @@ RUN echo "whoami: $(whoami)" \
     # which means the current user is root
     && id \
     && npm install -g typescript \
-    && npm install -g "cypress@10.4.0" \
+    && npm install -g "cypress@10.6.0" \
     # Cypress cache and installed version
 
     # give every user read access to the "/root" folder where the binary is cached
