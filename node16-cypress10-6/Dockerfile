@@ -24,6 +24,10 @@ RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm
 
+# Sentry cli
+RUN curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="2.7.0" bash
+RUN npm install -g @sentry/cli --unsafe-perm
+
 # Dependencies for running Cypress.io Test Runner
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
